@@ -69,7 +69,6 @@ class DockerDaemon:
             '/bin/bash -c "launchctl list | grep docker | cut -f3 | grep -v helper"'
         )
         exit_status, response = run_command(mac_command)
-        print(f"process name is {response[0]}")
         if exit_status == 0:
             self.process_name = response[0]
 
@@ -89,17 +88,15 @@ class SyslogServer:
         # TODO change hard-coded path
         command = "/bin/bash -c 'docker ps | grep test-server_centossyslog_1'"
         exit_status, response = run_command(command)
-        print(f"docker ps command response: {response}")
         if exit_status != 0:
             command = (
                 "sh /Users/kchaudhary/workspace/test-server/start-syslog-server.sh"
             )
             exit_status, response = run_command(command)
-            print(f"shell script response: {response}")
             if exit_status != 0:
                 # Fail here, raise exception
                 pass
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        command = "docker start test-server_centossyslog_1"
+        command = "docker stop test-server_centossyslog_1"
         exit_status, response = run_command(command)

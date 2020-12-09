@@ -15,9 +15,7 @@ begin_date_str = begin_date.strftime("%Y-%m-%d %H:%M:%S")
 @pytest.fixture
 def data_transfer():
     with DockerDaemon():
-        print("docker daemon started")
         with SyslogServer():
-            print("syslog server started")
             yield run_command
 
 
@@ -31,7 +29,7 @@ def test_auditlogs_search(command):
     "command",
     [
         (
-            "code42 audit-logs '{}' send-to localhost -b 2020-12-08 -p TCP".format(
+            "code42 audit-logs send-to localhost -p TCP -b '{}'".format(
                 begin_date_str
             )
         )
@@ -39,6 +37,4 @@ def test_auditlogs_search(command):
 )
 def test_auditlogs_send_to(data_transfer, command):
     exit_status, response = data_transfer(command)
-    print(exit_status)
-    print(response)
     assert exit_status == 0
